@@ -4,6 +4,8 @@ import (
 	"github.com/FabianK1991/civilization/simulation/world"
 	"sync"
 	"time"
+	"encoding/json"
+	"github.com/FabianK1991/civilization/simulation/population"
 )
 
 type Simulation struct {
@@ -13,14 +15,14 @@ type Simulation struct {
 
 	Time int64
 	World world.World
-	// population population.Population
+	Population population.Population
 }
 
-func (sim *Simulation) init() {
-	sim.started = false
+func (sim *Simulation) Init() {
+	sim.World.Init(sim.Population)
 }
 
-func (sim *Simulation) start() {
+func (sim *Simulation) Start() {
 	sim.Lock()
 
 	if(sim.started) {
@@ -36,11 +38,22 @@ func (sim *Simulation) start() {
 	}
 }
 
-func (sim *Simulation) stop() {
+func (sim *Simulation) Stop() {
 	sim.Lock()
 	defer sim.Unlock()
 
 	sim.started = false
+}
+
+func (sim *Simulation) GetJSON() string {
+	sim.Lock()
+	defer sim.Unlock()
+
+	data, err := json.Marshal(sim); if err != nil {
+		return ""
+	}
+
+	return string(data)
 }
 
 func (sim *Simulation) tick() {

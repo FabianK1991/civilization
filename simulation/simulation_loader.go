@@ -6,6 +6,9 @@ import (
 )
 
 func (sim *Simulation) SaveToFile(filename string) error {
+	sim.Lock()
+	defer sim.Unlock()
+
 	data, err := json.Marshal(sim); if err != nil {
 		return err
 	}

@@ -3,9 +3,15 @@ package world
 import (
 	"github.com/beefsack/go-astar"
 	"math"
+	"github.com/FabianK1991/civilization/simulation/population"
 )
 
 type TileType int
+type Resources int
+
+const (
+	RESOURCE_FISH Resources = iota
+)
 
 const (
 	TILE_UNKNOWN TileType = iota
@@ -19,6 +25,11 @@ type Tile struct {
 
 	IsBlocked bool
 	TileType TileType
+
+	Resources []Resources
+
+	// Stuff that is needed internally
+	persons []*population.Person
 	world World
 }
 
