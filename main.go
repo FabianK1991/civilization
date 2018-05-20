@@ -1,22 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"github.com/FabianK1991/civilization/simulation"
-	"github.com/beefsack/go-astar"
-	"strconv"
+	"fmt"
 )
 
-
 func main() {
-	var world simulation.World = simulation.GenerateWorld()
+	//var world simulation.World = simulation.GenerateWorld()
+	//world.SaveToFile("world.json")
+	world, _ := simulation.LoadFromFile("world.json")
 
-	path, _, _ := astar.Path(world[0][0], world[8][9])
-
-	for i:=len(path) - 1;i>=0;i-- {
-		x := path[i].(*simulation.Tile).X
-		y := path[i].(*simulation.Tile).Y
-
-		fmt.Println("Take: " + strconv.Itoa(x) + "," + strconv.Itoa(y))
-	}
+	fmt.Println(world[0][0])
 }
