@@ -1,14 +1,33 @@
 package main
 
 import (
-	"github.com/FabianK1991/civilization/simulation"
 	"fmt"
+	"github.com/FabianK1991/civilization/simulation/world"
+	"github.com/FabianK1991/civilization/simulation"
 )
 
-func main() {
+func startup() {
 	//var world simulation.World = simulation.GenerateWorld()
 	//world.SaveToFile("world.json")
-	world, _ := simulation.LoadFromFile("world.json")
 
-	fmt.Println(world[0][0])
+	fmt.Println(s[1][5])
+}
+
+func main() {
+	// go startup()
+	// api.StartApi()
+
+	sim := simulation.Simulation{
+		World: world.GenerateWorld(),
+	}
+
+	sim.World[0][0].TileType = world.TILE_WATER
+
+	sim.SaveToFile("sim.json")
+
+	//sim, _ := simulation.LoadFromFile("sim.json");
+
+	//fmt.Println(sim.World)
+
+	//startup()
 }
