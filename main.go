@@ -22,15 +22,13 @@ func startup() *simulation.Simulation {
 	}
 
 	sim.Init()
-	sim.SaveToFile("sim.json")
+	//sim.SaveToFile("sim.json")
 
 	return &sim
 }
 
 func main() {
 	var sim = startup()
-
-	go sim.Start()
 
 	api.StartApi(sim)
 }

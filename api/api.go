@@ -12,5 +12,15 @@ func StartApi (sim *simulation.Simulation) {
 		c.String(200, "%s", sim.GetJSON())
 	})
 
+	r.GET("/stop", func(c *gin.Context) {
+		sim.Stop()
+		c.Status(200)
+	})
+
+	r.GET("/start", func(c *gin.Context) {
+		go sim.Start()
+		c.Status(200)
+	})
+
 	r.Run() // listen and serve on 0.0.0.0:8080
 }
