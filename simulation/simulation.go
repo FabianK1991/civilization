@@ -60,5 +60,7 @@ func (sim *Simulation) tick() {
 	sim.Lock()
 	defer sim.Unlock()
 
+	sim.Time++
+
 	time.Sleep(TICK_TIMEOUT * time.Millisecond)
 }

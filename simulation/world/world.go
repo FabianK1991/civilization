@@ -4,7 +4,7 @@ import (
 	"github.com/FabianK1991/civilization/simulation/population"
 )
 
-type World map[int]map[int]*Tile
+type World [][]*Tile
 
 func (world World) Init(population population.Population) {
 	for x, row := range world {

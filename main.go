@@ -4,13 +4,14 @@ import (
 	"github.com/FabianK1991/civilization/simulation/world"
 	"github.com/FabianK1991/civilization/simulation"
 	"github.com/FabianK1991/civilization/simulation/population"
+	"github.com/FabianK1991/civilization/api"
 )
 
-func startup() {
+func startup() *simulation.Simulation {
 	sim := simulation.Simulation{
 		World: world.GenerateWorld(),
 		Population: []*population.Person{
-			&population.Person{
+			{
 				X: 0,
 				Y: 0,
 				Gender: population.GENDER_MALE,
@@ -22,17 +23,14 @@ func startup() {
 
 	sim.Init()
 	sim.SaveToFile("sim.json")
+
+	return &sim
 }
 
 func main() {
-	startup()
+	var sim = startup()
 
-	// go startup()
-	// api.StartApi()
+	go sim.Start()
 
-	//sim, _ := simulation.LoadFromFile("sim.json");
-
-	//fmt.Println(sim.World)
-
-	//startup()
+	api.StartApi(sim)
 }
