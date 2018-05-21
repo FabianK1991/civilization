@@ -18,5 +18,11 @@ func GenerateWorld() World {
 		}
 	}
 
+	world[4][5].TileType = TILE_WATER
+	world[4][5].Resources = []Resources{RESOURCE_WATER}
+
+	world[5][5].TileType = TILE_WATER
+	world[5][5].Resources = []Resources{RESOURCE_FISH, RESOURCE_WATER}
+
 	return world
 }

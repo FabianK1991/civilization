@@ -1,0 +1,156 @@
+<html>
+<head>
+    <title>Civilization</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="application/javascript">
+        $(window).on('load', () => {
+            refresh();
+        });
+
+        let started = false;
+        let fetchInterval = null;
+        let data = null;
+        let firstRender = true;
+        let selectedPos = null;
+
+        function refresh() {
+            $.ajax("http://localhost:8080/getSimulation").then((response) => {
+                data = JSON.parse(response);
+
+                renderBoard();
+            });
+        }
+
+        function startSimulation() {
+            if(!started) {
+                started = true;
+
+                $.ajax("http://localhost:8080/start").then(() => {
+                    fetchInterval = setInterval(() => {
+                        refresh()
+                   }, 1000);
+                });
+            }
+        }
+
+        function stopSimulation() {
+            if(started) {
+                started = false;
+                clearInterval(fetchInterval);
+
+                $.ajax("http://localhost:8080/stop");
+            }
+        }
+
+        function renderBoard() {
+            let $world = $(".world");
+
+            if(firstRender) {
+                data.World.forEach((row, x) => {
+                    $world.append("<div></div>");
+
+                    row.forEach((col, y) => {
+                        $($world.children()[x]).append("<div></div>");
+
+                        $($($world.children()[x]).children()[y]).click(() => {
+                            $(".field-info").text(JSON.stringify(col, null, 2));
+
+                            selectedPos = [x, y];
+                        })
+                    })
+                });
+
+                firstRender = false;
+            }
+
+            data.World.forEach((row, x) => {
+                row.forEach((col, y) => {
+                    $($($world.children()[x]).children()[y]).text("");
+
+                    if(col.TileType === 1) {
+                        $($($world.children()[x]).children()[y]).attr("class","grass");
+                    }
+                    else if(col.TileType === 2) {
+                        $($($world.children()[x]).children()[y]).attr("class","water");
+                    }
+
+                    if(col.Resources) {
+                        $($($world.children()[x]).children()[y]).text(col.Resources.map(resource => {
+                           if(resource === 0) {
+                               return "Fish";
+                           }
+
+                           return "Unknown";
+                        }).join(" "));
+                    }
+                })
+            });
+
+            for(let uuid in data.Population) {
+                let person = data.Population[uuid];
+                let personTile = $($($world.children()[person.X]).children()[person.Y])
+
+                personTile.text(personTile.text() + person.Prename + " " + person.Surname)
+            }
+
+            $(".ticks").text(data.Time);
+        }
+
+        function updateField() {
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:8080/updateTile",
+                data: $(".field-info").val(),
+                contentType: 'application/json'
+            }).then(refresh);
+        }
+    </script>
+    <style>
+        .world > div {
+            display: flex;
+        }
+
+        .world > div > div {
+            border: 1px solid black;
+            height: 60px;
+            width: 60px;
+        }
+
+        .grass {
+            background-color: green;
+        }
+
+        .water {
+            background-color: aqua;
+        }
+
+        .world-wrapper {
+            display: flex;
+        }
+
+        .field-info {
+            width: 300px;
+            height: 300px;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <span>Ticks: <span class="ticks"></span></span>
+    <button onclick="javascript:startSimulation()">Start</button>
+    <button onclick="javascript:stopSimulation()">Stop</button>
+</div>
+<div class="world-wrapper">
+    <div class="world">
+
+    </div>
+    <div class="details">
+        <textarea class="field-info"></textarea>
+        <div>
+            <button onclick="javascript:updateField()">Update</button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

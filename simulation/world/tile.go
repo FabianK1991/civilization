@@ -11,6 +11,7 @@ type Resources int
 
 const (
 	RESOURCE_FISH Resources = iota
+	RESOURCE_WATER
 )
 
 const (
@@ -43,7 +44,7 @@ func (tile*Tile) PathNeighbors() []astar.Pather {
 		for j:=-1;j<=1;j+=1 {
 			if i == 0 && j == 0 {
 				continue;
-			} else if WorldHasField(tile.world, tile.X + i, tile.Y + j) {
+			} else if WorldHasField(tile.world, tile.X + i, tile.Y + j) && tile.world[tile.X + i][tile.Y + j].IsBlocked == false {
 				retSlice = append(retSlice, tile.world[tile.X + i][tile.Y + j])
 			}
 		}
@@ -53,6 +54,10 @@ func (tile*Tile) PathNeighbors() []astar.Pather {
 }
 
 func (tile*Tile) PathNeighborCost(to astar.Pather) float64 {
+	if to.(*Tile).TileType == TILE_WATER {
+		return 100.0 // We don't want to walk over water
+	}
+
 	return 1.0
 }
 

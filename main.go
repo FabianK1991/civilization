@@ -8,16 +8,12 @@ import (
 )
 
 func startup() *simulation.Simulation {
+	person := population.CreatePerson(0, 0, "Fabian", "Test", population.GENDER_MALE)
+
 	sim := simulation.Simulation{
 		World: world.GenerateWorld(),
-		Population: []*population.Person{
-			{
-				X: 0,
-				Y: 0,
-				Gender: population.GENDER_MALE,
-				Prename: "Fabian",
-				Surname: "Test",
-			},
+		Population: map[string]*population.Person{
+			person.UUID: person,
 		},
 	}
 

@@ -3,8 +3,8 @@ package simulation
 import (
 	"github.com/FabianK1991/civilization/simulation/world"
 	"sync"
-	"time"
 	"encoding/json"
+	"time"
 	"github.com/FabianK1991/civilization/simulation/population"
 )
 
@@ -13,7 +13,7 @@ type Simulation struct {
 
 	started bool
 
-	Time int64
+	Time int
 	World world.World
 	Population population.Population
 }
@@ -56,11 +56,30 @@ func (sim *Simulation) GetJSON() string {
 	return string(data)
 }
 
+func (sim *Simulation) UpdateTile(updatedTile *world.Tile) {
+	sim.Lock()
+	defer sim.Unlock()
+
+	sim.World[updatedTile.X][updatedTile.Y].TileType = updatedTile.TileType
+	sim.World[updatedTile.X][updatedTile.Y].IsBlocked = updatedTile.IsBlocked
+	sim.World[updatedTile.X][updatedTile.Y].Resources = updatedTile.Resources
+}
+
 func (sim *Simulation) tick() {
+	time.Sleep(TICK_TIMEOUT * time.Millisecond)
+
+	// Lock the simulation
 	sim.Lock()
 	defer sim.Unlock()
 
 	sim.Time++
 
-	time.Sleep(TICK_TIMEOUT * time.Millisecond)
+	for _, person := range sim.Population {
+		tickNeeds(person, sim)
+		decideNextAction(person, sim)
+	}
+}
+
+func (sim *Simulation) GetDayTime() int {
+	return sim.Time % TICKS_PER_DAY
 }
