@@ -39,6 +39,8 @@ type Person struct {
 	Prename string
 	Surname string
 
+	Health int
+
 	Needs map[NeedsType]float64
 	Skills map[SkillType]float64
 

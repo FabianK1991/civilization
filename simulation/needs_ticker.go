@@ -1,10 +1,15 @@
 package simulation
 
-import "github.com/FabianK1991/civilization/simulation/population"
+import (
+	"github.com/FabianK1991/civilization/simulation/population"
+	"math"
+)
 
 func decideNextAction(person *population.Person, sim *Simulation) {
 	if(person.CurrentAction == population.ACTIONS_IDLE) {
+		// benefits, cost := getFishingBenefit(person, sim)
 
+		// Check for items
 	}
 }
 
@@ -16,7 +21,7 @@ func tickNeeds(person *population.Person, sim *Simulation) {
 
 func tickSleep(person *population.Person, sim *Simulation) {
 	if(person.CurrentAction == population.ACTIONS_SLEEPING) {
-		person.Needs[population.NEEDS_ENERGY] += 12.5 / float64(TICKS_PER_HOUR)
+		person.Needs[population.NEEDS_ENERGY] = math.Max(100, person.Needs[population.NEEDS_ENERGY] + SLEEPING_ENERGY_RESTORED_PER_TICK)
 
 		return
 	}

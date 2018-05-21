@@ -20,6 +20,19 @@ type Cost struct {
 	ticks float64
 }
 
+func getSleepingBenefit(person *population.Person, sim *Simulation) (*Benefit, *Cost) {
+	return &Benefit{
+		needsChanges: map[population.NeedsType]NeedChange{
+			population.NEEDS_ENERGY: {
+				change: 100 - person.Needs[population.NEEDS_ENERGY],
+				useableLater: false,
+			},
+		},
+	}, &Cost {
+		ticks: (100 - person.Needs[population.NEEDS_ENERGY]) / SLEEPING_ENERGY_RESTORED_PER_TICK,
+	}
+}
+
 func getCollectingWaterBenefit(person *population.Person, sim *Simulation) (*Benefit, *Cost) {
 	x, y, found := world.FindClosestResource(person, world.RESOURCE_WATER, sim.World)
 

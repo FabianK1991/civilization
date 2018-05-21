@@ -12,6 +12,8 @@ func CreatePerson(x int, y int, prename string, surname string, gender Gender) *
 		Prename: prename,
 		Surname: surname,
 
+		Health: 100,
+
 		Needs: map[NeedsType]float64{
 			NEEDS_ENERGY: 100,
 			NEEDS_HUNGER: 100,
